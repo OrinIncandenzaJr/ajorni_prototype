@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Edit Itinerary</h1>
+  {% for activity in activities %}
+    {% include '_activity.html' %}
+  {% endfor %}
+
+{% endblock %}
