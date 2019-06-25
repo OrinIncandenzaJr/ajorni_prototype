@@ -1,15 +1,18 @@
 {% extends 'bootstrap/base.html' %}
 
 {% block title %}
-  {% if title %}{{ title }} - Itinerary Blog{% else %}Welcome to Itinerary Blog{% endif %}
+{% if title %}{{ title }} - Itinerary Blog{% else %}Welcome to Itinerary Blog{% endif %}
 {% endblock %}
 
 
 {% block navbar %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
 <nav class="navbar navbar-default">
     <div class="container">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -40,9 +43,9 @@
 <div class="container">
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-info" role="alert">{{ message }}</div>
-        {% endfor %}
+    {% for message in messages %}
+    <div class="alert alert-info" role="alert">{{ message }}</div>
+    {% endfor %}
     {% endif %}
     {% endwith %}
 
@@ -50,3 +53,4 @@
     {% block app_content %}{% endblock %}
 </div>
 {% endblock %}
+

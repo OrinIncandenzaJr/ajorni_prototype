@@ -3,9 +3,16 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, ItineraryForm, ActivityForm, EditActivityForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Itinerary, Activity
-from flask import request
+from flask import request,jsonify
 from werkzeug.urls import url_parse
 from datetime import datetime
+from PIL import Image
+import numpy as np
+import base64
+import io
+from werkzeug.utils import secure_filename
+import time
+import os
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -138,6 +145,7 @@ def explore():
         if itineraries.has_next else None
     prev_url = url_for('explore', page=itineraries.prev_num) \
         if itineraries.has_prev else None
+    
     return render_template('index.html', title='Explore', itineraries=itineraries.items,
                            next_url=next_url, prev_url=prev_url)
 
@@ -158,6 +166,7 @@ def add_activity(itinerary_id):
             description=form.description.data)
         db.session.add(activity)
         db.session.commit()
+        print("dONE")
         return redirect(url_for('itinerary', itinerary_id=itinerary_id))
     return render_template('add_activity.html', form=form)
 
@@ -176,6 +185,7 @@ def edit_activity(activity_id):
     if form.validate_on_submit():
         activity.name = form.name.data
         activity.description = form.description.data
+        activity.picture = form.picture.data.stream._file.read()
         db.session.commit()
         flash('Your changes have been saved.')
         return redirect(url_for('activity', activity_id=activity_id))
@@ -196,10 +206,33 @@ def edit_itinerary(itinerary_id):
 @login_required
 def add_itinerary():
     form = ItineraryForm()
-    if form.validate_on_submit():
-        itinerary = Itinerary(name=form.name.data, city=form.city.data)
+    if (form.validate_on_submit()) and (request.method == 'POST'):
+        orgfName = form.picture.data.filename.split('.')
+        orgfileName = str(int(time.time())) + "." + orgfName[-1]
+        sfname = str(secure_filename(orgfileName))
+        form.picture.data.save(os.path.join(app.config['UPLOAD_FOLDER'], sfname))
+
+        itinerary = Itinerary(name=form.name.data, city=form.city.data, picture=orgfileName)
+
         db.session.add(itinerary)
         db.session.commit()
         flash('Your itinerary is now live!')
         return redirect(url_for('add_activity', itinerary_id=itinerary.id)) #create route for this one
     return render_template('add_itinerary.html', form=form)
+
+
+@app.route('/post', methods=['GET', 'POST'])
+@login_required
+def post():
+    json = request.json
+    x = json.replace('item[]=', ',')
+    y = x.replace('&,', '')
+    final = y.replace(',', '')
+    data = final.split('><')
+    for index,values in enumerate(data):
+        name = values.strip('Activity < >')
+        data = Activity.query.filter_by(name=name).first()
+        data.order_id = index
+        db.session.commit()
+
+    return jsonify(final)

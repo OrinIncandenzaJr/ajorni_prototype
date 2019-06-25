@@ -2,7 +2,7 @@
 
 {% block content %}
   <h1>Create A New Itinerary</h1>
-  <form action="" method="POST">
+  <form action="" method="POST" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <p>
       {{ form.name.label }}<br>
@@ -18,8 +18,13 @@
       <span style="color: red;">[{{ error }}]</span>
       {% endfor %}
     </p>
-
+    <p>
+      {{ form.picture.label }}<br>
+      {{ form.picture }}<br>
+    </p>
     <p>{{ form.submit() }}</p>
   </form>
+
+
 
 {% endblock %}

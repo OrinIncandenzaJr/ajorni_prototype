@@ -1,5 +1,6 @@
 from datetime  import datetime
 from app import db
+from sqlalchemy.dialects.sqlite import BLOB
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from app import login
@@ -60,13 +61,14 @@ class Itinerary(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     city = db.Column(db.String(32))
+    picture = db.Column(db.String(32))
     __searchable__ = ['name']
 
     def __repr__(self):
         return f'<Itinerary {self.name}>'
 
     def get_activities(self):
-        return Activity.query.filter_by(itinerary_id=self.id).order_by(Activity.timestamp.asc())
+        return Activity.query.filter_by(itinerary_id=self.id).order_by(Activity.order_id.asc())
 
 
 class Activity(db.Model):
@@ -75,6 +77,7 @@ class Activity(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     itinerary_id = db.Column(db.Integer, db.ForeignKey('itinerary.id'))
     description = db.Column(db.String(140))
+    order_id = db.Column(db.Integer)
     # __searchable__ = ['name', 'description']
 
     def __repr__(self):
@@ -84,8 +87,7 @@ class Activity(db.Model):
         return Itinerary.query.filter_by(id=self.itinerary_id).first().user_id
 
 
-
-
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
+

@@ -4,6 +4,7 @@
 <a href="{{ url_for('itinerary', itinerary_id=activity.itinerary_id)}}">Back to itinerary</a>
 <h1>{{ title }}</h1>
 {{ activity.description }}
+{{ picture }}
 <br><br>
 {% if activity.get_user() == current_user.id %}
   <a href="{{ url_for('edit_activity', activity_id=activity.id)}}">Edit Activity</a>

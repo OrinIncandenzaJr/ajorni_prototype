@@ -9,9 +9,13 @@ from flask_mail import Mail
 from flask_bootstrap import Bootstrap
 import os
 
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(APP_ROOT, 'static', 'images')
 
 app = Flask(__name__)
 app.config.from_object(Config)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 Login = LoginManager(app)

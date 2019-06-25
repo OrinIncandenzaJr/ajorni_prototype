@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Length
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from app.models import User
 
 class LoginForm(FlaskForm):
@@ -45,6 +46,7 @@ class ItineraryForm(FlaskForm):
     name = StringField('Name your itinerary', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired()])
     submit = SubmitField('Submit')
+    picture = FileField('Add an image', validators=[FileRequired(),FileAllowed(['jpg', 'png'], 'Images only!')])
 
 class ActivityForm(FlaskForm):
     name = StringField('Name your activity', validators=[DataRequired()])

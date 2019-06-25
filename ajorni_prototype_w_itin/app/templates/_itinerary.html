@@ -1,19 +1,17 @@
 <table class="table table-hover">
     <tr>
-        <td width="70px">
-            <a href="{{ url_for('user', username=itinerary.author.username) }}">
-                <img src="{{ itinerary.author.avatar(70) }}" />
-            </a>
-        </td>
         <td>
             <a href="{{ url_for('user', username=itinerary.author.username) }}">
                 {{ itinerary.author.username }}
             </a>
-            created:
+            <br>
+            <img src ="/static/images/{{itinerary.picture}}" style="max-width:150px; height:auto;">
             <br>
             <a href="{{ url_for('itinerary', itinerary_id=itinerary.id)}}">
               {{ itinerary.name }}
             </a>
+
+            
         </td>
     </tr>
 </table>

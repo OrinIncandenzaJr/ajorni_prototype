@@ -2,13 +2,70 @@
 
 {% block app_content %}
 <a href="{{ url_for('index')}}">Back</a>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+
 <h1>{{ title }}</h1>
-{% for activity in activities %}
-  {% include '_activity.html' %}
-{% endfor %}
+
+
+<ul id="sortMe">
+    {% for activity in activities %}
+        <li id="item_{{ activity }}">
+          <table class="table table-hover">
+            <tr>
+                  <td> 
+                    <a href="{{ url_for('activity', activity_id=activity.id) }}">
+                      {{ activity.name }}
+                    </a></br>
+                    {{ activity.description }}
+                  </td>
+          </tr>
+        </table>
+      </li>
+    {% endfor %}
+    </ul>
+
 <br>
+
 {% if itinerary.user_id == current_user.id %}
+
 <a href="{{ url_for('add_activity', itinerary_id=itinerary.id)}}">Add another activity</a><br>
 <a href="{{ url_for('edit_itinerary', itinerary_id=itinerary.id)}}">Edit Itinerary</a>
+
 {% endif %}
+
 {% endblock %}
+
+
+{% block scripts %}
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/JavaScript">
+    $( function() {
+    $( "#sortable" ).sortable();
+    $( "#sortable" ).disableSelection();
+  } );
+    </script>
+
+<script>
+  $(function () {
+    $('#sortMe').sortable({
+      update: function (event, ui) {
+        var postData = $(this).sortable('serialize');
+        $.ajax({
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(postData),
+          dataType: 'json',
+          url: '/post'
+        });
+      }
+    });
+  });
+</script>
+
+
+{% endblock %}
+
+
